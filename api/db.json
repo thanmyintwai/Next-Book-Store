@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "kowai",
+      "email": "kowai@wai.com"
+    },
+    {
+      "id": "102012197665909713239",
+      "name": "insta sea33",
+      "email": "instasea33@gmail.com"
+    },
+    {
+      "id": "108878720637638846805",
+      "name": "Inya Pacific",
+      "email": "inyapacific.my@gmail.com"
+    },
+    {
+      "id": "116986786631749785851",
+      "name": "John Moore",
+      "email": "moorejohn90@googlemail.com"
+    }
+  ]
+}
