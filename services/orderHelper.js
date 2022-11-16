@@ -52,10 +52,10 @@ export const updateBooksInOrder = async (orderId, booksTo, prisma, operation) =>
         books.disconnect = booksTo
     }else { books.connect = booksTo }
 
-  
+    
     const updatedOrder = await prisma.order.update({
             where: {
-                id: parseInt(orderId)
+                id: orderId
             },
             data: {
               books
@@ -69,7 +69,7 @@ export const getBooksToUseInOperations = async (requestedBooks, orderId, prisma)
 
     const existingBooks = await prisma.order.findUnique({
         where: {
-            id: parseInt(orderId)
+            id: orderId
         }, select: {
             books: {
                 select: {

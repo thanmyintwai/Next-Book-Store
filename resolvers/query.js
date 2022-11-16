@@ -147,10 +147,33 @@ const book = async(parent, {bookId}, context, info) =>{
     
 }
 
+const order = async(parent, {orderId}, context, info) =>{
+    try{
+
+        const lookedOrder = await prisma.order.findUnique({
+            where: {
+                id: orderId,
+            }, 
+        })
+      
+    
+            return {
+                code: 200, success: true, message: `Success`, "data" :lookedOrder 
+              }
+    }
+    catch(err){
+        return {
+            code: 400, success: false, message: err, "data": null
+          }
+    }
+    
+}
+
 
 export const Query = {
     hello, 
     book,
     books,
-    orders
+    order,
+    orders,
 }

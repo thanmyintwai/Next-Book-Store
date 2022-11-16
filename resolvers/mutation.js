@@ -6,6 +6,7 @@ import {
     updateStatusInOrder,
 
 } from '../services/orderHelper.js';
+import { printBeautifully } from '../services/general.js';
 import { prisma } from '../services/graphQL.js'
 import { selectedFieldsInBook } from '../config/selectedFields.js';
 
@@ -83,7 +84,7 @@ const updateBook = async (parent, { bookId, details }, content, info) =>{
             }, 
         })
         
-        console.log('ok')
+    
         return { code: 200, success: true, message: `Success`, "data": lookedBook }
 
     }catch(err){
@@ -92,12 +93,14 @@ const updateBook = async (parent, { bookId, details }, content, info) =>{
     }
 }
  
-const addOrder = async (parent, args, context, info) =>{
+const addOrder = async (parent, {customerId, books}, context, info) =>{
       
         try{
-            const  {customerId, books} = args.details
+            
             let objectsToAdd = books.map(reqb => { return { "id" : reqb }} )
             let total = await calculateTotal(books, prisma)
+            
+            printBeautifully(objectsToAdd)
 
             const ordData = await prisma.order.create({
                 data: {
@@ -109,7 +112,7 @@ const addOrder = async (parent, args, context, info) =>{
                             }, 
                             create: {
                                 firstName: 'than', lastName: 'Wyne', email: "tw@kmail.com",
-                                address: "2/2420, Thynne Road, Morningside", postCode: 4001, city: "Brisbane", country: "AU"
+                                address: "2/2420, Thynne Road, Morningside", postCode: "4001", city: "Brisbane", country: "AU"
                             },
                         },
                     },
@@ -120,7 +123,7 @@ const addOrder = async (parent, args, context, info) =>{
             })
             return { code: 200, success: true, message: `Success`, "data": ordData }
         }catch(err){
-            return { code: 400, success: false, message: `Fail`, "data": null }      
+            return { code: 400, success: false, message: err, "data": null }      
         }
     }
 
@@ -177,14 +180,14 @@ const updateOrder = async(parent, { orderId, books, statusTo}, context, info ) =
         console.log(objectsToAdd)
         console.log(objectsToRemove)
         ///await updateBooksInOrder(parseInt(orderId), toDisconnect, prisma, "REMOVE")
-        await updateBooksInOrder(parseInt(orderId), objectsToRemove, prisma, "REMOVE")
+        await updateBooksInOrder(orderId, objectsToRemove, prisma, "REMOVE")
                 
         ///let total = await calculateTotal(updateBooks, prisma)
         let total = await calculateTotal(books, prisma)
-        await updateTotal(parseInt(orderId), total._sum.price, prisma)
+        await updateTotal(orderId, total._sum.price, prisma)
 
         //const updatedOrder = await updateBooksInOrder(parseInt(orderId), toConnect,prisma, "ADD") 
-       await updateBooksInOrder(parseInt(orderId), objectsToAdd, prisma, "ADD") 
+       await updateBooksInOrder(orderId, objectsToAdd, prisma, "ADD") 
       }
 
       const updatedOrder = await prisma.order.findUnique({
@@ -201,7 +204,7 @@ const removeOrder = async (parent, { orderId }, context, info) =>{
         try{
             await prisma.order.delete({
                 where: {
-                    id: parseInt(orderId)
+                    id: orderId
                 }
             })
 

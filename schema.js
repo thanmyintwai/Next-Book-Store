@@ -4,7 +4,7 @@ export const typeDefs = `
         books(filter: String, skip: Int, take: Int, orderBy: BooksOrderByInput): BooksResponse
         book (bookId: String!): BookResponse
         orders(filter: String, skip: Int, take:Int, orderBy: OrdersOrderByInput): OrdersResponse
-        
+        order(orderId: String!): OrderResponse
     }
     type Book{
         id: ID!
@@ -85,7 +85,7 @@ export const typeDefs = `
 
         addOrder(customerId: String!, books: [String!]!) :  OrderResponse
 
-        updateOrder(orderId: String!, books: [Int], statusTo: OrderStatusInput) : OrderResponse
+        updateOrder(orderId: String!, books: [String], statusTo: OrderStatusInput) : OrderResponse
 
         removeOrder(orderId: String!): MutationResponse
     }
