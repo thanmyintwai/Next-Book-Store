@@ -11,13 +11,7 @@ const hello = async (parent, args, context, info) =>{
     return orders
 } */
 const books = async(parent, args, context, info) =>{
-   /*  const where = args.filter 
-    ? {
-        OR: [
-            { title: { contains: 'or' } },
-            { isbn: { contains: 'or' } }
-        ]
-    }: {} */
+  
     try{
         const where = {}
        
@@ -122,19 +116,19 @@ const orders = async (parent, args, context, info) =>{
      */
 
 
-const book = async(parent, {id}, context, info) =>{
+const book = async(parent, {bookId}, context, info) =>{
     try{
 
         const lookedBook = await prisma.book.findUnique({
             where: {
-                id: parseInt(id),
+                id: bookId,
             }, 
         })
         console.log(lookedBook)
       
           const updatedBook =  await prisma.book.update({
                 where: {
-                    id: parseInt(id),
+                    id: bookId,
                 }, data: {
                     views: {
                         increment: 1,

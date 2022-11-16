@@ -2,7 +2,7 @@ export const typeDefs = `
     type Query{
         hello: String!
         books(filter: String, skip: Int, take: Int, orderBy: BooksOrderByInput): BooksResponse
-        book (id: ID!): BookResponse
+        book (bookId: String!): BookResponse
         orders(filter: String, skip: Int, take:Int, orderBy: OrdersOrderByInput): OrdersResponse
         
     }
@@ -54,8 +54,8 @@ export const typeDefs = `
     }
 
     input OrderDetails {
-        customerId: Int 
-        books: [Int]!
+        customerId: String!
+        books: [String]!
         
     }
     
@@ -79,13 +79,15 @@ export const typeDefs = `
        
         addBook(details: BookDetails ) : BookResponse
 
-        updateBook(bookId: Int!, details: BookDetails ) : BookResponse
+        updateBook(bookId: String!, details: BookDetails ) : BookResponse
 
-        addOrder(details: OrderDetails) :  OrderResponse
+        removeBook(bookId: String!) : MutationResponse 
 
-        updateOrder(orderId: Int!, books: [Int], statusTo: OrderStatusInput) : OrderResponse
+        addOrder(customerId: String!, books: [String!]!) :  OrderResponse
 
-        removeOrder(orderId: Int!): MutationResponse
+        updateOrder(orderId: String!, books: [Int], statusTo: OrderStatusInput) : OrderResponse
+
+        removeOrder(orderId: String!): MutationResponse
     }
 
   

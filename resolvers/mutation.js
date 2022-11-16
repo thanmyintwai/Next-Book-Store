@@ -70,7 +70,6 @@ const updateBook = async (parent, { bookId, details }, content, info) =>{
         await Promise.all(
                 keys.map(async (k) => {
                     //assume it is price or pages
-                    console.log('still in there')
                     if(Number.isInteger(details[k])){
                         await numberUpdate(bookId, details[k], k)
                     }else {
@@ -80,7 +79,7 @@ const updateBook = async (parent, { bookId, details }, content, info) =>{
         )
         const lookedBook = await prisma.book.findUnique({
             where: {
-                id: parseInt(bookId),
+                id: bookId,
             }, 
         })
         
@@ -106,7 +105,7 @@ const addOrder = async (parent, args, context, info) =>{
                     orderBy: {
                         connectOrCreate: {
                             where: {
-                                id: parseInt(customerId)
+                                id: customerId
                             }, 
                             create: {
                                 firstName: 'than', lastName: 'Wyne', email: "tw@kmail.com",
@@ -217,6 +216,23 @@ const removeOrder = async (parent, { orderId }, context, info) =>{
         } 
     }
 
+const removeBook = async (parent, { bookId}, context, info) =>{
+    try{
+        await prisma.book.delete({
+            where: {
+                id: bookId
+            }
+        })
+        return {
+            code: 200, success: true, message: `Success`
+        }
+    }catch(err){
+        return {
+            code: 400, success: false, message: `Failed`
+        }
+    }
+}
+
 export const Mutation = {
     logout, 
     addBook, 
@@ -224,4 +240,5 @@ export const Mutation = {
     updateOrder,
     removeOrder,
     updateBook,
+    removeBook
 }
