@@ -5,12 +5,20 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import QrCodeIcon from '@mui/icons-material/QrCode';
+import SellIcon from '@mui/icons-material/Sell';
+
+
 
 function Item ({data}) {
     return (
         
-                    
-        <Grid item key={data} xs={12} sm={6} md={4}>
+         <Grid item key={data.id} xs={12} sm={6} md={4}>
             <Card sx={{ maxWidth: 345 }}>
                 <CardMedia
                     component="img"
@@ -20,21 +28,42 @@ function Item ({data}) {
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                                    Lizard
+                                    {data.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                                Lizards are a widespread group of squamate reptiles, with over 6,000
-                                species, ranging across all continents except Antarctica
-                    </Typography>
+                   
+                    <List>
+                        <ListItem>
+                        <ListItemIcon>
+                            <SellIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={`$ ${data.price}`} />
+                        </ListItem> 
+                       
+                        <ListItem>
+                        <ListItemIcon>
+                            <AutoStoriesIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={`${data.pages} pages`}/>
+                        </ListItem>
+                        <ListItem>
+                        <ListItemIcon>
+                            <QrCodeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={data.isbn}/>
+                        </ListItem>
+
+                    </List>
                 </CardContent>
                     <CardActions>
-                        <Button size="small">Share</Button>
-                        <Button size="small">Learn More</Button>
+                        <Button size="small">Edit</Button>
+                        <Button size="small">Delete</Button>
                 </CardActions>
-                    </Card>
-                    </Grid>
+            </Card>
+        </Grid>
                
     )
 }
 
 export default Item;
+
+

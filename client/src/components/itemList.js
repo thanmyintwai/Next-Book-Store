@@ -4,6 +4,7 @@ import Pagination from '@mui/material/Pagination';
 
 import Item from './item';
 import Head from './head';
+import { useQuery, gql} from '@apollo/client';
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -15,16 +16,52 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   });
  */
 
-function ItemList () {
 
+const GET_BOOKS = gql`
+    query BooksQuery  {
+  books {
+    code
+    success
+    message
+    data {
+      id
+      isbn
+      title
+      price
+      pages
+      orders {
+        id
+        books {
+          title
+        }
+        orderBy {
+          email
+        }
+      }
+    }
+    count
+  }
+}
+`;
+
+function ItemList () {
+    const { loading, error, data } = useQuery(GET_BOOKS);
+    let books = null
+    if(loading) return <p>loading...</p>
+    if(error) return <p>Error: {error.message}</p>
+  /*   if(data){
+        books = data.books
+        console.log(books)
+    } */
     return (
         <Container sx={{ py: 5 }} maxWidth="lg">
+            {console.log(data)}
           <Head />
              <Container sx={{ py: 5 }} maxWidth="lg">
                 <Grid container spacing={4}>
-                    {cards.map((card) => (
+                    {data.books.data.map((book) => (
                         
-                        <Item key={card} data={card}/>
+                        <Item key={book.id} data={book}/>
                     ))}
                 </Grid>
             </Container>
