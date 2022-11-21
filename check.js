@@ -87,8 +87,10 @@ const where1 = {
 } 
 
 
-const orders = await prisma.order.findMany({
-    where, 
+const orders = await prisma.book.findMany({
+    orderBy: {
+        pages: "desc"
+    }
 })
 
 console.log(orders)

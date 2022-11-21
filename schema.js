@@ -60,8 +60,8 @@ export const typeDefs = `
     }
     
     input BooksOrderByInput {
-        pages: Sort
-        price: Sort 
+        pages: SortBy
+        price: SortBy 
     }
 
     input OrdersOrderByInput {
@@ -133,7 +133,7 @@ export const typeDefs = `
         REMOVE 
     }
 
-    enum Sort {
+    enum SortBy {
         asc
         desc
     }

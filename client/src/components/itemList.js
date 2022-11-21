@@ -5,7 +5,8 @@ import Pagination from '@mui/material/Pagination';
 import Item from './item';
 import Head from './head';
 import { useQuery, gql} from '@apollo/client';
-
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 /* const Title = styled(Paper)({
@@ -18,8 +19,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 
 const GET_BOOKS = gql`
-    query BooksQuery  {
-  books {
+    query BooksQuery($orderBy: BooksOrderByInput, $filter: String)  {
+  books (orderBy: $orderBy, filter: $filter) {
     code
     success
     message
@@ -45,7 +46,21 @@ const GET_BOOKS = gql`
 `;
 
 function ItemList () {
-    const { loading, error, data } = useQuery(GET_BOOKS);
+    const { loading, error, data, refetch } = useQuery(GET_BOOKS,{
+      variables: {
+      
+       
+      }
+    });
+
+    const searched = useSelector(state=>state.books.searched)
+
+    useEffect(()=>{
+        refetch({ 
+          filter: searched
+        })
+    }, [searched])
+
     let books = null
     if(loading) return <p>loading...</p>
     if(error) return <p>Error: {error.message}</p>
