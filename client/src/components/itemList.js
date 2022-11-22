@@ -87,7 +87,14 @@ function ItemList () {
         skip: skipped
       })
     }
-    
+
+    const afterDeleteFetch = () =>{
+      console.log('i m fetched')
+      refetch({ 
+        filter: searched
+      })
+    }
+
     return (
         <Container sx={{ py: 5 }} maxWidth="lg">
             {console.log(data)}
@@ -96,7 +103,7 @@ function ItemList () {
                 <Grid container spacing={4}>
                     {data.books.data.map((book) => (
                         
-                        <Item key={book.id} data={book}/>
+                        <Item key={book.id} book={book} afterDelete={afterDeleteFetch}/>
                     ))}
                 </Grid>
             </Container>

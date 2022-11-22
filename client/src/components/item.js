@@ -18,22 +18,35 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
-import BookForm from './bookForm';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import LinearProgress from '@mui/material/LinearProgress';
+import Alert from '@mui/material/Alert';
+
+
 import * as React from 'react';
+
+import { gql, useMutation } from '@apollo/client';
+
+const REMOVE_BOOK = gql`
+  mutation removeBook($bookId: String!){
+  removeBook(bookId:$bookId){
+    code
+    success
+    message
+  }
+}
+`
+
 
 const MyTransition = React.forwardRef(function MyTransition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function Item ({data}) {
+function Item ({book, afterDelete}) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     //const [editOpen, setEditOpen] = useState(false);
+
+    const [removeBook, { data, loading, error}] = useMutation(REMOVE_BOOK)
 
   const handleDeleteOpen = () => {
     setDeleteOpen(true);
@@ -43,6 +56,21 @@ function Item ({data}) {
     setDeleteOpen(false);
   };
 
+  const handleActivateOperation = () =>{
+    removeBook({
+      variables: { bookId: book.id }
+    })
+     /* if(data){
+      //setDeleteOpen(false)
+      afterDelete()
+    }  */
+    
+  }
+  React.useEffect(()=>{
+    if(!deleteOpen){
+      afterDelete()
+    }
+  },[deleteOpen])
 /*   const handleEditOpen = () =>{
     console.log('i am called')
     setEditOpen(true)
@@ -55,7 +83,7 @@ function Item ({data}) {
 
     return (
         
-         <Grid item key={data.id} xs={12} sm={6} md={4}>
+         <Grid item key={book.id} xs={12} sm={6} md={4}>
             <Card sx={{ maxWidth: 345 }}>
                 <CardMedia
                     component="img"
@@ -65,7 +93,7 @@ function Item ({data}) {
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                                    {data.title}
+                                    {book.title}
                     </Typography>
                    
                     <List>
@@ -73,20 +101,20 @@ function Item ({data}) {
                         <ListItemIcon>
                             <SellIcon />
                         </ListItemIcon>
-                        <ListItemText primary={`$ ${data.price}`} />
+                        <ListItemText primary={`$ ${book.price}`} />
                         </ListItem> 
                        
                         <ListItem>
                         <ListItemIcon>
                             <AutoStoriesIcon />
                         </ListItemIcon>
-                        <ListItemText primary={`${data.pages} pages`}/>
+                        <ListItemText primary={`${book.pages} pages`}/>
                         </ListItem>
                         <ListItem>
                         <ListItemIcon>
                             <QrCodeIcon />
                         </ListItemIcon>
-                        <ListItemText primary={data.isbn}/>
+                        <ListItemText primary={book.isbn}/>
                         </ListItem>
 
                     </List>
@@ -108,17 +136,21 @@ function Item ({data}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {data.title}
+            {book.title}
+            { loading? <LinearProgress /> : null }
+            { error ?       <Alert severity="error">Couldn't remove the given book</Alert> : null}
+            { data ? <Alert severity="success">Successfully deleted</Alert>:null }
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteClose}>No</Button>
-          <Button onClick={handleDeleteClose} autoFocus>
+          <Button onClick={handleActivateOperation} autoFocus>
             Yes
           </Button>
         </DialogActions>
         
       </Dialog>
+      
         </Grid>
                
     )
