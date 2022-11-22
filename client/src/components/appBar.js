@@ -12,8 +12,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const pages = ['Dashboard', 'Books', 'Orders'];
+const pages = ['dashboard', 'books', 'orders'];
 const settings = ['Profile', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -36,6 +37,7 @@ function ResponsiveAppBar() {
   };
 
   return (
+    <nav>
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -44,7 +46,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+           
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -55,9 +57,9 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            Next Book Store
+           <Link to='/books' style={{textDecoration: 'none', color: 'inherit'}}>Next Book Store</Link> 
           </Typography>
-
+          
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -86,10 +88,10 @@ function ResponsiveAppBar() {
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}
-            >
+            > 
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography textAlign="center">{page}</Typography> 
                 </MenuItem>
               ))}
             </Menu>
@@ -119,6 +121,7 @@ function ResponsiveAppBar() {
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
+                component={Link} to={`/${page}`}
               >
                 {page}
               </Button>
@@ -157,6 +160,7 @@ function ResponsiveAppBar() {
         </Toolbar>
       </Container>
     </AppBar>
+    </nav>
   );
 }
 export default ResponsiveAppBar;

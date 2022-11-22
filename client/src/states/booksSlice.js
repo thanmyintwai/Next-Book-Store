@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     searched: '',
-    orderedBy: '',
+    ordBy: '',
     books: null,
     count: 0
 }
@@ -26,11 +26,16 @@ const bookSlice = createSlice({
             reducer(state, action) {
                 state.count = action.payload
             }
+        },
+        updateOrderBy: {
+            reducer(state, action){
+                state.ordBy = action.payload;
+            }
         }
     }, 
 
 })
 
-export const { updateSearch, updateBooks, updateCount } = bookSlice.actions
+export const { updateSearch, updateBooks, updateCount, updateOrderBy } = bookSlice.actions
 
 export default bookSlice.reducer;

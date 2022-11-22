@@ -7,9 +7,18 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
+import { updateSearch, updateOrderBy,updateBooks, updateCount } from '../states/booksSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Head(){
-    const [age, setAge] = useState('')
+    const [orderBy, setOrderBy] = useState('')
+    const dispatch = useDispatch()
+
+    const handleChange = (event) =>{
+        setOrderBy(event.target.value)
+        dispatch(updateOrderBy(event.target.value))
+
+    }
     return (
 
     
@@ -27,15 +36,15 @@ function Head(){
                 <Select
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
-                    value={age}
+                    value={orderBy}
                     label="Age"
-                    onChange={()=> console.log('hello')}
+                    onChange={handleChange}
                 >
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
-                    <MenuItem value={10}>Pages</MenuItem>
-                    <MenuItem value={20}>Price</MenuItem>
+                    <MenuItem value={"pages"}>Pages</MenuItem>
+                    <MenuItem value={"price"}>Price</MenuItem>
                 </Select>
         
         </FormControl>

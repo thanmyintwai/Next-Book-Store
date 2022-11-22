@@ -57,6 +57,8 @@ function ItemList () {
       }
     });
     const searched = useSelector(state=>state.books.searched)
+    const ordBy = useSelector(state => state.books.ordBy)
+
     const [pages, setPages] = useState(1)
   
 
@@ -65,6 +67,23 @@ function ItemList () {
           filter: searched
         })
     }, [searched])
+
+    useEffect(()=>{
+      if(ordBy == 'pages'){
+       refetch({
+        orderBy: {
+          "pages": 'desc'
+        }
+       })
+      }else if(ordBy == 'price'){
+        refetch({
+          orderBy:{
+            "price": "desc"
+          }
+
+        })
+      }
+    }, [ordBy])
 
     useEffect(()=>{
       const parPag =5;
