@@ -5,9 +5,13 @@ import Pagination from '@mui/material/Pagination';
 import Item from './item';
 import Head from './head';
 import { useQuery, gql} from '@apollo/client';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { updateSearch, updateBooks, updateCount } from '../states/booksSlice';
+
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+
 
 /* const Title = styled(Paper)({
     textAlign: 'center',
@@ -19,8 +23,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 
 const GET_BOOKS = gql`
-    query BooksQuery($orderBy: BooksOrderByInput, $filter: String)  {
-  books (orderBy: $orderBy, filter: $filter) {
+    query BooksQuery($orderBy: BooksOrderByInput, $filter: String, $skip: Int, $take: Int)  {
+  books (orderBy: $orderBy, filter: $filter, skip: $skip, take: $take) {
     code
     success
     message
@@ -46,14 +50,15 @@ const GET_BOOKS = gql`
 `;
 
 function ItemList () {
+
     const { loading, error, data, refetch } = useQuery(GET_BOOKS,{
       variables: {
-      
-       
+        take: 6
       }
     });
-
     const searched = useSelector(state=>state.books.searched)
+    const [pages, setPages] = useState(1)
+  
 
     useEffect(()=>{
         refetch({ 
@@ -61,13 +66,28 @@ function ItemList () {
         })
     }, [searched])
 
+    useEffect(()=>{
+      const parPag =5;
+      if(data){
+        const totalItem = data.books.count 
+        let pagNums = Math.ceil(totalItem / parPag)
+        setPages(pagNums)
+
+      }
+    },[data])
+
     let books = null
     if(loading) return <p>loading...</p>
     if(error) return <p>Error: {error.message}</p>
-  /*   if(data){
-        books = data.books
-        console.log(books)
-    } */
+  
+
+    const pageChange= (event, page)=>{
+      let skipped = (page - 1) * 6
+      refetch({ 
+        skip: skipped
+      })
+    }
+    
     return (
         <Container sx={{ py: 5 }} maxWidth="lg">
             {console.log(data)}
@@ -81,7 +101,7 @@ function ItemList () {
                 </Grid>
             </Container>
             <Container sx={{ py: 5,  display: 'flex', justifyContent: 'center'}} maxWidth="lg">
-                <Pagination count={10} shape="rounded" />
+                <Pagination count={pages} shape="rounded" onChange={pageChange}/>
             </Container>
         </Container>
 

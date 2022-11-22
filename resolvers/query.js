@@ -21,7 +21,7 @@ const books = async(parent, args, context, info) =>{
         
         }
         console.log(JSON.stringify(where, null, 4));
-
+        console.log(args.skip)
 
         const books = await prisma.book.findMany({
             where, 
