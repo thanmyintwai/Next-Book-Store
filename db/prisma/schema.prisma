@@ -24,18 +24,27 @@ model Book {
   @@unique([title, isbn])
 }
 
+model Profile {
+  id         String   @id @default(cuid())
+  socialId   String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String   @unique
+}
+
 model Customer {
   //id               Int     @id @default(autoincrement())
-  id               String  @id @default(cuid())
+  id               String   @id @default(cuid())
   firstName        String
-  lastName         String
+  lastName         String?
   email            String
-  address          String
-  postCode         String
-  city             String
-  country          String
+  phone            String
+  address          String?
+  postCode         String?
+  city             String?
+  country          String?
   //FK
   associatedOrders Order[] //---------
+  Profile          Profile?
 }
 
 model Order {
