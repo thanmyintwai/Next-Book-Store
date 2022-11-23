@@ -23,10 +23,13 @@ function Head(){
 
     
     <Grid container spacing={2}>
+        <Grid px={5} container direction="row" justifyContent="start">
+            <h1>BOOKS</h1>
+        </Grid>
         <Grid item xs={6} md={8}>
             <Stack px={4} direction="row" spacing={3}>
                 {/* <Title  elevation={0}>{`12 Books`}</Title>  */}
-                <Button variant="contained" color="success">NEW</Button>
+                <Button variant="contained" color="info">NEW</Button>
                 <CustomizedInputBase />
             </Stack>
         </Grid>
