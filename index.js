@@ -75,9 +75,10 @@ app.use('/auth', autRouter)
 app.get('/api/current_user', (req, res,next)=>{
     console.log(req.session)
     if(!req.user){
-        res.send('Guess Login')
+        res.send({isLogIn:false})
     }else{
-        res.send(`current user id ${req.user.name}`)
+        console.log(req.user)
+        res.send(`current user id ${req.user.id}`)
     }
     
 })

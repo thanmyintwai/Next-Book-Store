@@ -5,13 +5,14 @@ export const typeDefs = `
         book (bookId: String!): BookResponse
         orders(filter: String, skip: Int, take:Int, orderBy: OrdersOrderByInput): OrdersResponse
         order(orderId: String!): OrderResponse
+        booksInCart(booksId: [String!]!): BooksResponse
     }
     type Book{
         id: ID!
         title: String! 
         pages: Int
         isbn: String!
-        price: Int
+        price: Float
         orders: [Order!]
         views: Int 
     }

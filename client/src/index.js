@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { CookiesProvider } from "react-cookie";
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -26,6 +27,7 @@ const client = new ApolloClient({
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <CookiesProvider>
     <ApolloProvider client={client}>
         <Provider store={store}>
           <BrowserRouter>
@@ -33,6 +35,7 @@ root.render(
           </BrowserRouter>
         </Provider>
     </ApolloProvider>
+    </CookiesProvider>
     
   </React.StrictMode>
 );

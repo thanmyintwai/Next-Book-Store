@@ -27,7 +27,7 @@ const authRouter = (passport) =>{
            //console.log(req.user)
           //console.log('google callback is called')
           //res.send(req.user)
-          res.redirect('/graphql')
+          res.redirect('/api/current_user')
         }) 
 
         router.get('/logout', (req, res, next)=>{

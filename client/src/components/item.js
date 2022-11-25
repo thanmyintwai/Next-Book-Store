@@ -19,9 +19,18 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import Slide from '@mui/material/Slide';
+import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import Alert from '@mui/material/Alert';
-
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import { useCookies } from 'react-cookie';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { useSelector, useDispatch } from 'react-redux';
+import { initializeCart, addToCart } from '../states/cartSlice';
 
 import * as React from 'react';
 
@@ -36,6 +45,10 @@ const REMOVE_BOOK = gql`
   }
 }
 `
+const CartAlert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 const MyTransition = React.forwardRef(function MyTransition(props, ref) {
@@ -47,6 +60,24 @@ function Item ({book, afterDelete}) {
     //const [editOpen, setEditOpen] = useState(false);
 
     const [removeBook, { data, loading, error}] = useMutation(REMOVE_BOOK)
+
+    const [cookies, setCookie, removeCookie] = useCookies(['cart']);
+    const [open, setOpen] = React.useState(false);
+
+    let bookInCart = useSelector(state => state.cart.ids)
+
+    const dispatch = useDispatch()
+
+ 
+
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpen(false);
+    };
+
 
   const handleDeleteOpen = () => {
     setDeleteOpen(true);
@@ -80,7 +111,42 @@ function Item ({book, afterDelete}) {
   const handleEditClose = () =>{
     setEditOpen(false)
   } */
+  const handleAddCart1 = (event) =>{
+   
+   if(!cookies.cart){
+    setCookie('cart', {[book.id]: book.title}, {path:'/'})
+    setOpen(true)
 
+   }else{
+   
+    if(!(book.id in cookies.cart)){
+       let org = cookies.cart
+      org[book.id] = book.title
+      console.log(cookies.cart)
+      setCookie('cart', org, {path:'/'})
+      setOpen(true) 
+    }
+   }
+   /* if(cookies.cart && !cookies.cart.includes(book.id)){
+   
+    console.log('top')
+   }
+   else{
+    console.log('bottom')
+    setCookie('cart', [book.id], {path: '/'}) 
+    
+   } */
+  
+  }
+
+  const handleAddCart = (event) =>{
+    if(!(book.id in bookInCart)){
+      //dispatch(addToCart(book.id))
+      dispatch(addToCart(book))
+
+      //dispatch(addToCart{})
+    }
+  }
     return (
         
          <Grid item key={book.id} xs={12} sm={6} md={4}>
@@ -92,9 +158,12 @@ function Item ({book, afterDelete}) {
                     alt="green iguana"
                 />
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                  <Tooltip title={book.title}>
+                    <Typography noWrap={true} gutterBottom variant="h5" component="div">
                                     {book.title}
-                    </Typography>
+                  </Typography>
+                    </Tooltip>
+                    <h3>by John W</h3>
                    
                     <List>
                         <ListItem>
@@ -120,8 +189,16 @@ function Item ({book, afterDelete}) {
                     </List>
                 </CardContent>
                     <CardActions>
-                        <Button size="small" >Edit</Button>
-                        <Button size="small" onClick={handleDeleteOpen}>Delete</Button>
+                        <IconButton color="primary" aria-label="Delete" onClick={handleDeleteOpen}>
+                          <DeleteIcon />
+                        </IconButton>
+                        <IconButton color="primary" aria-label="Edit">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={handleAddCart} color="primary" aria-label="add to shopping cart">
+                          <AddShoppingCartIcon />
+                        </IconButton>
+
                 </CardActions>
             </Card>
 
@@ -150,7 +227,11 @@ function Item ({book, afterDelete}) {
         </DialogActions>
         
       </Dialog>
-      
+      <Snackbar open={open} autoHideDuration={1600} onClose={handleClose}>
+        <CartAlert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Successfully added into cart
+        </CartAlert>
+      </Snackbar>
         </Grid>
                
     )

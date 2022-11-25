@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,16 +16,55 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useCookies } from 'react-cookie';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
+import { useSelector, useDispatch } from 'react-redux';
+import { initializeCart, addToCart } from '../states/cartSlice';
+
 const pages = ['dashboard', 'books', 'orders'];
-const settings = ['Cart', 'Profile', 'Customer', 'Author', 'Logout'];
+const settings = ['Profile', 'Customer', 'Author', 'Logout'];
+
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies(['cart']);
+  //const [numOfItem, setNumOfItem] = useState(0)
+  let numOfItem = useSelector(state => state.cart.ids ? Object.keys(state.cart.ids).length:0)
+  //let numOfItem = 0
+  const dispatch = useDispatch()
+  
+ /*  const fetchData = () =>{
+    if(cookies.cart){
+      useDispatch(initializeCart(cookies.cart))
+    }
+    else{
+      useDispatch(initializeCart([]))
+    }
+  }
+ */
+
+  useEffect(()=>{
+    if(cookies.cart){
+      dispatch(initializeCart(cookies.cart))
+    }
+    else{
+      dispatch(initializeCart({}))
+    }
+  },[])
+  
+/*   useEffect(() => {
+    if(cookies.cart){
+      //setNumOfItem(cookies.cart.length)
+      setNumOfItem(Object.keys(cookies.cart).length)
+
+    }
+    
+  },[cookies]); */
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -139,11 +180,13 @@ function ResponsiveAppBar() {
           </Box>
             {/*  -----------------END show only on medium and above screen ----------------- */}
           <Box sx={{ flexGrow: 0}}>
+            <Link to='/cart' style={{ color: '#FFF' }}>
             <IconButton sx={{mr: 2}} size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={numOfItem} color="error">
                 <ShoppingCartIcon fontSize='inherit'/>
               </Badge>
             </IconButton>
+            </Link>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -174,6 +217,7 @@ function ResponsiveAppBar() {
           </Box>
         </Toolbar>
       </Container>
+      
     </AppBar>
     </nav>
   );

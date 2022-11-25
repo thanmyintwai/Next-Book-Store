@@ -16,7 +16,7 @@ model Book {
   title  String
   pages  Int     @default(1)
   isbn   String
-  price  Int     @default(0)
+  price  Float   @default(0)
   views  Int     @default(0)
   //FK
   orders Order[]
@@ -25,10 +25,15 @@ model Book {
 }
 
 model Profile {
-  id         String   @id @default(cuid())
-  socialId   String
-  customer   Customer @relation(fields: [customerId], references: [id])
-  customerId String   @unique
+  id         String    @id @default(cuid())
+  serviceId  String    @unique
+  provider   String?
+  firstName  String?
+  lastName   String?
+  email      String?
+  password   String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?   @unique
 }
 
 model Customer {

@@ -169,6 +169,24 @@ const order = async(parent, {orderId}, context, info) =>{
     
 }
 
+const booksInCart = async (parent, {booksId}, context, info) =>{
+    try{
+
+    
+        const booksInCart = await prisma.book.findMany({
+            where: {
+                id: { in: booksId },
+            }, 
+        })
+        return {
+            code: 200, success: true, message: `Success`, "data" :booksInCart 
+          }
+    }catch(err){
+        return {
+            code: 400, success: false, message: err, "data": null
+          }
+    }
+}
 
 export const Query = {
     hello, 
@@ -176,4 +194,5 @@ export const Query = {
     books,
     order,
     orders,
+    booksInCart
 }
