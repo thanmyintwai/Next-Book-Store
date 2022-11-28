@@ -25,38 +25,57 @@ model Book {
 }
 
 model Profile {
-  id         String    @id @default(cuid())
-  serviceId  String    @unique
-  provider   String?
-  firstName  String?
-  lastName   String?
-  email      String?
-  password   String?
-  customer   Customer? @relation(fields: [customerId], references: [id])
-  customerId String?   @unique
+  id        String  @id @default(cuid())
+  serviceId String  @unique
+  provider  String
+  firstName String
+  lastName  String?
+  email     String
+  password  String?
+  phone     Int?    @unique
+
+  //customer   Customer? @relation(fields: [customerId], references: [id])
+  //customerId String?   @unique
+
+  livedIn Addresses[]
+
+  associatedOrders Order[]
 }
 
-model Customer {
-  //id               Int     @id @default(autoincrement())
-  id               String   @id @default(cuid())
-  firstName        String
-  lastName         String?
-  email            String
-  phone            String
-  address          String?
-  postCode         String?
-  city             String?
-  country          String?
-  //FK
-  associatedOrders Order[] //---------
-  Profile          Profile?
+model Addresses {
+  id           String @id @default(cuid())
+  unit         Int?
+  streetNumber Int
+  street       String
+  suburb       String
+  state        String
+  postCode     Int
+
+  linkedTo   Profile @relation(fields: [linkedToId], references: [id])
+  linkedToId String
 }
+
+//model Customer {
+//id               Int     @id @default(autoincrement())
+//  id        String  @id @default(cuid())
+//  firstName String
+//  lastName  String?
+//  email     String
+//  phone     String
+//  address   String?
+//  postCode  String?
+//  city      String?
+//  country   String?
+//  FK
+//  associatedOrders Order[] //---------
+//  Profile          Profile?
+//}
 
 model Order {
   //id        Int      @id @default(autoincrement())
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   //FK 1 M //------------
-  orderBy   Customer @relation(fields: [orderById], references: [id])
+  orderBy   Profile @relation(fields: [orderById], references: [id])
   orderById String
   //FK M M 
   books     Book[]
